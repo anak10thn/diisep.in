@@ -7,11 +7,11 @@ var express = require('express'),
     google = require('google');
 
 //app
-var port = 8888;
+var port = 8080;
 var app = module.exports = express();
 //routes
 
-app.configure('production',function(){
+app.configure(function(){
     app.set('views', __dirname + '/views');
     app.engine('ejs', engine);
     app.set('view engine', 'ejs');
