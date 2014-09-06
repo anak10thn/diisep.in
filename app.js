@@ -11,7 +11,7 @@ var port = 8888;
 var app = module.exports = express();
 //routes
 
-app.configure(function(){
+app.configure('production',function(){
     app.set('views', __dirname + '/views');
     app.engine('ejs', engine);
     app.set('view engine', 'ejs');
@@ -27,4 +27,4 @@ require('./routes/routes.js')(app,port,superagent,fs,google);
 //post data
 
 app.listen(port);
-console.log("access aksaramaya miniserver http://hostname:"+port); 
+console.log("access aksaramaya miniserver http://hostname:"+port);
