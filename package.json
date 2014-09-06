@@ -1,12 +1,12 @@
 {
-  "name": "google-search",
-  "version": "0.0.1",
+  "name": "srut.in",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.4.4",
+    "express": "*",
     "jade": "*",
     "google": "*",
     "superagent": "0.14.6",
