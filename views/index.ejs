@@ -15,60 +15,77 @@
     <link href="css/flat-ui.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">   
+<div class="container">
 <div class="row">
     <div class="col-xs-2">
     </div>
     <div class="col-xs-8">
-        <div class="form-group" style="margin: auto">
-<!--            <form action="/search" method="post">-->
-	        	<input type="text" value="" id="search" placeholder="Give me your ass...." class="form-control">
+        <div class="logo" id="logo" style="background: url(images/logo.png);width:244px;height:60px;margin:30% auto 20px auto"></div>
+        <div class="form-group" style="margin: auto" id="form">
+	        	<input type="text" value="" id="search" placeholder="a word once files everywhere...." class="form-control">
+
                 <span class="input-icon" style="margin:0;padding-right: 0px;right: 0px;top: 0px;border-radius:0 6px 6px 0">
-                <div class="btn-group select select-block" style="margin-bottom:0;width:100px">
-                    <button class="btn dropdown-toggle clearfix btn-primary" data-toggle="dropdown" style="border-radius:0 4px 4px 0">
-                        <span class="filter-option pull-left">. pdf</span>&nbsp;<span class="caret"></span>
-                    </button>
-                    <span class="dropdown-arrow dropdown-arrow-inverse"></span>
-                    <ul class="dropdown-menu dropdown-inverse" role="menu" style="overflow-y: auto; min-height: 108px; max-height: 185px;">
-                        <li >
-                            <a tabindex="-1" href="#" class=""><span class="pull-left">PDF File</span></a>
-                        </li>
-                        <li class="">
-                            <a tabindex="-1" href="#" class="active"><span class="pull-left">DOC File</span></a>
-                        </li>
-                        <li >
-                            <a tabindex="-1" href="#" class=""><span class="pull-left">PPT File</span></a>
-                        </li>
-                        <li >
-                            <a tabindex="-1" href="#" class=""><span class="pull-left">EXE File</span></a>
-                        </li>
-                        <li class="selected">
-                            <a tabindex="-1" href="#" class="active"><span class="pull-left">ADD Option</span></a>
-                        </li>
-                    </ul>
-                </div>
-<!--            </form>-->
-                <!--<select name="herolist" value="X-Men" class="select-block">
-                    <option value="0">Choose hero</option>
-                    <option value="1">Spider Man</option>
-                    <option value="2">Wolverine</option>
-                    <option value="3">Captain America</option>
-                    <option value="X-Men" selected="selected">X-Men</option>
-                    <option value="Crocodile">Crocodile</option>
-                </select>-->
-            </span>
+                    <div class="btn-group select select-block" style="margin-bottom:0;width:100px">
+                        <button class="btn dropdown-toggle clearfix btn-primary" data-toggle="dropdown" style="border-radius:0 4px 4px 0">
+                            <span class="filter-option pull-left">. pdf</span>&nbsp;<span class="caret"></span>
+                        </button>
+                        <span class="dropdown-arrow dropdown-arrow-inverse"></span>
+                        <ul class="dropdown-menu dropdown-inverse" role="menu" style="overflow-y: auto; min-height: 108px; max-height: 185px;">
+                            <li class="selected">
+                                <a tabindex="-1" href="#" class="active"><span class="pull-left">PDF File</span></a>
+                            </li>
+                            <li class="">
+                                <a tabindex="-1" href="#" class=""><span class="pull-left">DOC File</span></a>
+                            </li>
+                            <li >
+                                <a tabindex="-1" href="#" class=""><span class="pull-left">PPT File</span></a>
+                            </li>
+                            <li >
+                                <a tabindex="-1" href="#" class=""><span class="pull-left">EXE File</span></a>
+                            </li>
+                            <!--<li>
+                                <a tabindex="-1" href="#" class=""><span class="pull-left">ADD Option</span></a>
+                            </li>-->
+                        </ul>
+                    </div>
+                </span>
             
         </div>
     </div>
     <div class="col-xs-2">
+        <!--<a href="#" style="margin-top:16px"><span class="fui-gear" ></span> Setting</a>-->
     </div>
 </div>
 
 <div class="row">
-<div id="result" class="col-xs-12"> 
-
-</div> 
+    <div class="col-xs-1">
+    </div>
+    <div class="col-xs-10">
+        <div id="result" class="col-xs-12" style="margin-top:30px"></div>
+    </div>
+    <div class="col-xs-1">
+    </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--<div class="row">
         <div class="col-xs-3">
             
@@ -158,53 +175,40 @@
     
 <script>
 $(document).ready(function(){
+    $(window).bind("beforeunload", function() {
+        return "Ohhhhh... yessss....";
+    })
     $('input#search').on('keydown',function(ev) {
         if(ev.which === 13) {
+            $("#logo").hide();
+            $("#form").css({"margin-top":"10px"});
             var query = $(this).val();
             var result = $('#result');
             $.ajax({
                 url : '/search',
-                data : "q="+query+"&page=4&ftype=pdf",
+                data : "q="+query+"&page=0&ftype=pdf",
                 type : 'POST',
                 dataType : 'json',
+                timeout : 15000,
                 beforeSend : function(){
-                    result.html('<center><img src="/images/loading.gif"></center>');
+                    result.html('<center><img src="/images/loader.gif"></center>');
                 },
                 success : function(data){
                     console.log(data);
-                    var html = "<ul>";
+                    var html = "<ul style='list-style-type: none;'>";
                     $.each(data,function(){
-                        html += '<li>'+this.title+'<a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
+                        html += '<li><a target="__blank" href="'+this.link+'">'+this.title+'</a><a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
                     });
+                    //html += "<li><center><a>more</a></center></li>";
                     html += "</ul>";
                     result.html(html);
+                },
+                error : function(){
+                    result.html('<center>sory no data</center>');
                 }
             });
             return false;
         }
-    });
-    $('form').submit(function(){
-        var form = $('form');
-        var result = $('#result');
-        $.ajax({
-            url : '/search',
-            data : form.serialize(),
-            type : 'POST',
-            dataType : 'json',
-            beforeSend : function(){
-                result.html('<center><img src="/images/loading.gif"></center>');
-            },
-            success : function(data){
-                console.log(data);
-                var html = "<ul>";
-                $.each(data,function(){
-                    html += '<li>'+this.title+'<a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
-                });
-                html += "</ul>";
-                result.html(html);
-            }
-        });
-        return false;
     });
 });
 </script>

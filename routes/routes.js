@@ -10,13 +10,13 @@ module.exports = function(app,port,superagent,fs,google){
             ftype = req.body.ftype,
             page = req.body.page;
         console.log(q);
-        google.resultsPerPage = 25;
+        google.resultsPerPage = 100;
         var nextCounter = 0;
         var linkData = [];
         function finish(){
             res.send(linkData);
         }
-        google(aq+' '+q+' filetype:'+ftype, function(err, next, links){
+        google(q+' filetype:'+ftype, function(err, next, links){
             if (err) console.error(err);
 
             for (var i = 0; i < links.length; ++i) {
