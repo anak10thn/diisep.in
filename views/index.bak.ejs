@@ -1,0 +1,119 @@
+<!--
+ Created with Webformgenerator by easyclick.ch
+ www.easyclick.ch
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="css/style.css" media="screen" rel="stylesheet" type="text/css"/>
+    <link href="css/uniform.css" media="screen" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.tools.js"></script>
+    <script type="text/javascript" src="js/jquery.uniform.min.js"></script>
+</head>
+<body>
+<div id="result" class="TTWForm" style="margin:10px auto 10px auto;position:relative;width:800px"> 
+
+</div>    
+
+<div>
+     <form action="/search" class="TTWForm" method="post" novalidate="" style="margin:10px auto">
+          
+          
+          <div id="field1-container" class="field f_100">
+               <label for="field1">
+                    Query
+               </label>
+               <input type="text" name="q" id="field1" placeholder="Ex : Maria Ozawa" required="required">
+          </div>
+          
+          
+          <div id="field2-container" class="field f_50">
+               <label for="field2">
+                    Advance Query
+               </label>
+               <input type="text" name="aq" id="field2" placeholder="Ex : diktat+bahan ajar+modul">
+          </div>
+          
+          
+          <div id="field3-container" class="field f_50">
+               <label for="field3">
+                    File Type
+               </label>
+               <select name="ftype" id="field3" required="required">
+                    <option id="field3-1" value="pdf">
+                         pdf
+                    </option>
+                    <option id="field3-2" value="doc">
+                         doc
+                    </option>
+                    <option id="field3-3" value="docx">
+                         docx
+                    </option>
+                    <option name="field3" id="field3-4" value="ppt">
+                         ppt
+                    </option>
+               </select>
+          </div>
+          
+          
+          <div id="field4-container" class="field f_50">
+               <label for="field4">
+                    Quantity Page
+               </label>
+               <select name="page" id="field4" required="required">
+                    <option id="field4-1" value="1">
+                         1
+                    </option>
+                    <option id="field4-2" value="2">
+                         2
+                    </option>
+                    <option id="field4-3" value="3">
+                         3
+                    </option>
+                    <option name="page" id="page-4" value="4" selected>
+                         4
+                    </option>
+               </select>
+          </div>
+          
+          
+          <div id="form-submit" class="field f_100 clearfix submit">
+               <input type="submit" value="Search">
+          </div>
+     </form>
+</div>
+
+    
+<script>
+$(document).ready(function(){
+    $('form').submit(function(){
+        var form = $('form');
+        var result = $('#result');
+        $.ajax({
+            url : '/search',
+            data : form.serialize(),
+            type : 'POST',
+            dataType : 'json',
+            beforeSend : function(){
+                result.html('<center><img src="/images/loading.gif"></center>');
+            },
+            success : function(data){
+                console.log(data);
+                var html = "<ul>";
+                $.each(data,function(){
+                    html += '<li>'+this.title+'<a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
+                });
+                html += "</ul>";
+                result.html(html);
+            }
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>
