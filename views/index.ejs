@@ -178,9 +178,13 @@
 
 <script>
 $(document).ready(function(){
+    var dick_url = window.location.origin;
     var pussy = window.location.href.split("#");
     var extn = "pdf";
     var doggy_style = function(query,extn){
+      if(query != ""){
+        window.location.href = dick_url+"/#"+query+"."+extn;
+      }
       $("#logo").hide();
       $("#form").css({"margin-top":"10px"});
       var result = $('#result');
