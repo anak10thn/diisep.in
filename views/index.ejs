@@ -183,7 +183,8 @@ $(document).ready(function(){
     var extn = "pdf";
     var doggy_style = function(query,extn){
       if(query != ""){
-        window.location.href = dick_url+"/#"+query+"."+extn;
+        var q_sp = query.split(" ").join("+");
+        window.location.href = dick_url+"/#"+q_sp+"."+extn;
       }
       $("#logo").hide();
       $("#form").css({"margin-top":"10px"});
