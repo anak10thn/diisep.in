@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Srutin | The Dog File Search Engine</title>
+    <title>Srutin | The Dog Files Search Engine</title>
     <!-- Loading Bootstrap -->
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -27,21 +27,24 @@
                 <span class="input-icon" style="margin:0;padding-right: 0px;right: 0px;top: 0px;border-radius:0 6px 6px 0">
                     <div class="btn-group select select-block" style="margin-bottom:0;width:100px">
                         <button class="btn dropdown-toggle clearfix btn-primary" data-toggle="dropdown" style="border-radius:0 4px 4px 0">
-                            <span class="filter-option pull-left">. pdf</span>&nbsp;<span class="caret"></span>
+                            <span class="filter-option pull-left" id="show-ext">. pdf</span>&nbsp;<span class="caret"></span>
                         </button>
                         <span class="dropdown-arrow dropdown-arrow-inverse"></span>
                         <ul class="dropdown-menu dropdown-inverse" role="menu" style="overflow-y: auto; min-height: 108px; max-height: 185px;">
                             <li class="selected">
-                                <a tabindex="-1" href="#" class="active"><span class="pull-left">PDF File</span></a>
+                                <a tabindex="-1" href="#" class="active" id="extension" data-ext="pdf"><span class="pull-left">PDF File</span></a>
                             </li>
                             <li class="">
-                                <a tabindex="-1" href="#" class=""><span class="pull-left">DOC File</span></a>
+                                <a tabindex="-1" href="#" class="" id="extension" data-ext="doc"><span class="pull-left">DOC File</span></a>
                             </li>
                             <li >
-                                <a tabindex="-1" href="#" class=""><span class="pull-left">PPT File</span></a>
+                                <a tabindex="-1" href="#" class="" id="extension" data-ext="ppt"><span class="pull-left">PPT File</span></a>
                             </li>
                             <li >
-                                <a tabindex="-1" href="#" class=""><span class="pull-left">EXE File</span></a>
+                                <a tabindex="-1" href="#" class="" id="extension" data-ext="exe"><span class="pull-left">EXE File</span></a>
+                            </li>
+                            <li >
+                                <a tabindex="-1" href="#" class="" id="extension" data-ext="apk"><span class="pull-left">Android Apps</span></a>
                             </li>
                             <!--<li>
                                 <a tabindex="-1" href="#" class=""><span class="pull-left">ADD Option</span></a>
@@ -49,7 +52,7 @@
                         </ul>
                     </div>
                 </span>
-            
+
         </div>
     </div>
     <div class="col-xs-2">
@@ -88,26 +91,26 @@
 
 <!--<div class="row">
         <div class="col-xs-3">
-            
+
      <form action="/search" class="TTWForm" method="post" novalidate="" style="margin:10px auto">
-          
-          
+
+
           <div id="field1-container" class="field f_100">
                <label for="field1">
                     Query
                </label>
                <input type="text" name="q" id="field1" placeholder="Ex : Maria Ozawa" required="required">
           </div>
-          
-          
+
+
           <div id="field2-container" class="field f_50">
                <label for="field2">
                     Advance Query
                </label>
                <input type="text" name="aq" id="field2" placeholder="Ex : diktat+bahan ajar+modul">
           </div>
-          
-          
+
+
           <div id="field3-container" class="field f_50">
                <label for="field3">
                     File Type
@@ -127,8 +130,8 @@
                     </option>
                </select>
           </div>
-          
-          
+
+
           <div id="field4-container" class="field f_50">
                <label for="field4">
                     Quantity Page
@@ -148,15 +151,15 @@
                     </option>
                </select>
           </div>
-          
-          
+
+
           <div id="form-submit" class="field f_100 clearfix submit">
                <input type="submit" value="Search">
           </div>
      </form>
     </div>
     </div>
-    
+
 </div>-->
 <!-- Load JS here for greater good =============================-->
     <script src="js/jquery-1.8.3.min.js"></script>
@@ -172,41 +175,71 @@
     <script src="js/jquery.stacktable.js"></script>
     <script src="http://vjs.zencdn.net/4.3/video.js"></script>
     <script src="js/application.js"></script>
-    
+
 <script>
 $(document).ready(function(){
+    var pussy = window.location.href.split("#");
+    var extn = "pdf";
+    var doggy_style = function(query,extn){
+      $("#logo").hide();
+      $("#form").css({"margin-top":"10px"});
+      var result = $('#result');
+      $.ajax({
+          url : '/search',
+          data : "q="+query+"&page=0&ftype="+extn,
+          type : 'POST',
+          dataType : 'json',
+          timeout : 15000,
+          beforeSend : function(){
+              result.html('<center><img src="/images/loader.gif"></center>');
+          },
+          success : function(data){
+              console.log(data);
+              var html = "<ul style='list-style-type: none;'>";
+              $.each(data,function(){
+                  html += '<li><a target="__blank" href="'+this.link+'">'+this.title+'</a><a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
+              });
+              //html += "<li><center><a>more</a></center></li>";
+              html += "</ul>";
+              result.html(html);
+          },
+          error : function(){
+              result.html('<center>sory no data</center>');
+          }
+      });
+    }
+
+    if(pussy.length == 2){
+      var pussy_oh = pussy[1].split(".");
+      if(pussy_oh.length == "2"){
+        var query= pussy_oh[0];
+        var extn = pussy_oh[1];
+        doggy_style(query,extn);
+      }
+    }
+
+    $("#extension span").click(function(){
+      var data = $(this).parent().attr('data-ext');
+      $(".active").removeClass("active");
+      $(".selected").removeClass("selected");
+      $(this).parent().addClass("active");
+      $(this).parent().parent().addClass("selected");
+      $("#show-ext").text(". "+data)
+      extn = data;
+      if($('input#search').val() != ""){
+        var query = $('input#search').val();
+        doggy_style(query,extn);
+      }
+    });
+
     $(window).bind("beforeunload", function() {
         return "Ohhhhh... yessss....";
-    })
+    });
+
     $('input#search').on('keydown',function(ev) {
         if(ev.which === 13) {
-            $("#logo").hide();
-            $("#form").css({"margin-top":"10px"});
-            var query = $(this).val();
-            var result = $('#result');
-            $.ajax({
-                url : '/search',
-                data : "q="+query+"&page=0&ftype=pdf",
-                type : 'POST',
-                dataType : 'json',
-                timeout : 15000,
-                beforeSend : function(){
-                    result.html('<center><img src="/images/loader.gif"></center>');
-                },
-                success : function(data){
-                    console.log(data);
-                    var html = "<ul style='list-style-type: none;'>";
-                    $.each(data,function(){
-                        html += '<li><a target="__blank" href="'+this.link+'">'+this.title+'</a><a target="__blank" href="'+this.link+'" style="float:right">[download]</a></li>';
-                    });
-                    //html += "<li><center><a>more</a></center></li>";
-                    html += "</ul>";
-                    result.html(html);
-                },
-                error : function(){
-                    result.html('<center>sory no data</center>');
-                }
-            });
+            var query = $('input#search').val();
+            doggy_style(query,extn);
             return false;
         }
     });
